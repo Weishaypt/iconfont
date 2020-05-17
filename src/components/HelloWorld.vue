@@ -1,58 +1,98 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div class="container">
+    <b-form-group>
+      <b-textarea v-model="css" no-resize rows="10"/>
+    </b-form-group>
+    <div class="mt-5">
+      <b-form-file
+        type="file"
+        ref="file"
+        @change="fileChange"
+        multiple
+      />
+      <b-row>
+        <b-col
+          v-for="(item, index) in files"
+          :key="index"
+        >
+          <b-card no-body>
+            <template v-slot:header>
+              <b-btn variant="danger" @click="remove(item)">
+                <i class="icon-master-close"></i>
+              </b-btn>
+            </template>
+            <img class="img-fluid" :src="item.base64" />
+          </b-card>
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+  data () {
+    return {
+      files: [],
+      baseName: 'test'
+    }
+  },
+  computed: {
+    css () {
+      let str = ''
+      this.files.forEach(item => {
+        str += `
+.${this.baseName}-${item.id} {
+  background-image: url('${item.base64}')
+}
+`
+      })
+      return str
+    }
+  },
+  mounted () {
+  },
+  methods: {
+    remove (target) {
+      this.files = this.files.filter(item => item.id !== target.id)
+    },
+    fileChange: function (e) {
+      const self = this
+      console.log('file changed')
+      var input, fr
+
+      input = this.$refs.file.$refs.input
+      console.log(input)
+      input.files.forEach((item, index) => {
+        perFile(input.files[index])
+      })
+      function perFile (file) {
+        fr = new FileReader()
+        fr.onload = createImage
+        fr.readAsDataURL(file)
+
+        function createImage () {
+          let name = file.name.split('.')
+          name.pop()
+          name = name.join('.')
+          self.files.push({
+            id: name,
+            base64: fr.result
+          })
+        }
+      }
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  .icon-master-close:before {
+    content: " ";
+  }
+  .icon-master-close {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBkPSJNNDA1IDEzNi43OThMMzc1LjIwMiAxMDcgMjU2IDIyNi4yMDIgMTM2Ljc5OCAxMDcgMTA3IDEzNi43OTggMjI2LjIwMiAyNTYgMTA3IDM3NS4yMDIgMTM2Ljc5OCA0MDUgMjU2IDI4NS43OTggMzc1LjIwMiA0MDUgNDA1IDM3NS4yMDIgMjg1Ljc5OCAyNTZ6Ii8+PC9zdmc+')
+  }
 </style>
