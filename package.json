@@ -17,7 +17,8 @@
     "svg2ttf": "^4.3.0",
     "svgicons2svgfont": "^9.1.1",
     "ttf2woff": "^2.0.1",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "websocket-extensions": "^0.1.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
