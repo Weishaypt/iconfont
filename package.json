@@ -19,7 +19,7 @@
     "ttf2woff": "^2.0.1",
     "vue": "^2.6.11",
     "websocket-extensions": "^0.1.4",
-    "lodash": ">=4.17.19"
+    "lodash": ">=4.17.21"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
